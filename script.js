@@ -10,14 +10,8 @@ button.addEventListener("click", function() {
     scoreDisplay.textContent = "Score: " + score;
     button.disabled = true;
 
-    const block = document.createElement("div");
-
-    block.classList.add("base");
-    block.style.left = "100px";
-    block.style.top = "100px";
-
     const playZone = document.querySelector(".play-zone");
-    playZone.appendChild(block);
+    
 
     let foodX = Math.floor(Math.random() * 20) * 20;
     let foodY = Math.floor(Math.random() * 20) * 20;
@@ -28,18 +22,48 @@ button.addEventListener("click", function() {
     food.style.top = foodY + "px";
     playZone.appendChild(food);
 
+    
+
     let x = 100;
     let y = 100;
     let dx = 20;
     let dy = 0;
-    block.style.left = x + "px";
-    block.style.top = y + "px";
+    let snake = [];
+
+    function addSegment(x,y) {
+        const segment = document.createElement("div");
+        segment.classList.add("base");
+        segment.style.left = x + "px";
+        segment.style.top = y + "px";
+        playZone.appendChild(segment);
+        snake.unshift({ x: x, y: y, element: segment });
+    }
+    
+    addSegment(x, y);
 
     const gameLoop = setInterval(function() {
         x = x +dx;
         y = y +dy;
-        block.style.left = x + "px";
-        block.style.top = y + "px";
+
+        let hitSelf = false;
+        for (let i = 0; i < snake.length; i++) {
+            if (snake[i].x === x && snake[i].y === y) {
+                hitSelf = true;
+            }
+
+        }
+        
+        if (x < 0 || x > 380 || y < 0 || y > 380 || hitSelf) {
+            console.log("game over");
+            clearInterval(gameLoop);
+            alert("Game Over! Score: " + score);
+            playZone.innerHTML = "";
+            button.disabled = false;
+            return;
+
+        }
+
+    addSegment(x, y);
 
         if (x === foodX && y === foodY) {
             console.log("ate it!");
@@ -50,17 +74,10 @@ button.addEventListener("click", function() {
             foodY = Math.floor(Math.random() * 20) * 20;
             food.style.left = foodX + "px";
             food.style.top = foodY + "px";
-
+        } else {
+            const tail = snake.pop();
+            tail.element.remove();
         }
-
-    if (x < 0 || x > 380 || y < 0 || y > 380) {    
-        console.log("game over");
-        clearInterval(gameLoop);
-        alert("Game Over! Score: " + score);
-        playZone.innerHTML = "";
-        button.disabled = false;
-
-    }
 
     }, 100);
     
@@ -91,4 +108,3 @@ document.addEventListener("keydown", function(event) {
 });
 
 });
-
