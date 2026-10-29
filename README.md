@@ -69,3 +69,5 @@ The website is hosted on github pages.
 - Improving the website CSS
 - Adding more projects with images
 - Adding my own devblog
+
+Written by a human.
